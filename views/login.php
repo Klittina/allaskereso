@@ -49,6 +49,6 @@
         <input type="password" name="password" placeholder="Jelszó" required><br>
         <button type="submit">Bejelentkezés</button>
     </form>
-    <p><a href="../index.php">Vissza a főoldalra</a></p>
+    <p><a href="../index.php">⬅Vissza a főoldalra</a></p>
 </body>
 </html>
