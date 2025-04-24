@@ -151,3 +151,23 @@ th {
     background-color: #28a745;
     color: white;
 }
+
+.autocomplete-suggestions {
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    background: white;
+    position: absolute;
+    z-index: 1000;
+    width: 300px;
+  }
+  
+  .autocomplete-suggestions div {
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  .autocomplete-suggestions div:hover {
+    background-color: #f0f0f0;
+  }
+  

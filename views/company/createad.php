@@ -44,6 +44,42 @@ if (isset($_SESSION['error_message'])) {
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="../../assets/styles.css">
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("position-input");
+    const suggestionsBox = document.getElementById("suggestions");
+
+    input.addEventListener("input", function () {
+        const query = this.value;
+        if (query.length < 1) {
+            suggestionsBox.innerHTML = "";
+            return;
+        }
+
+        fetch(`../../controllers/company/positionAutocomplete.php?q=${encodeURIComponent(query)}`)
+            .then(res => res.json())
+            .then(data => {
+                suggestionsBox.innerHTML = "";
+                data.forEach(item => {
+                    const div = document.createElement("div");
+                    div.textContent = item;
+                    div.addEventListener("click", () => {
+                        input.value = item;
+                        suggestionsBox.innerHTML = "";
+                    });
+                    suggestionsBox.appendChild(div);
+                });
+            });
+    });
+
+    document.addEventListener("click", function (e) {
+        if (!suggestionsBox.contains(e.target) && e.target !== input) {
+            suggestionsBox.innerHTML = "";
+        }
+    });
+});
+</script>
+
 </head>
 <body>
 <nav>
@@ -85,13 +121,11 @@ if (isset($_SESSION['error_message'])) {
 
 <h2>Új álláshirdetés</h2>
 <form action="../../controllers/company/createAdController.php" method="POST">
-    <label>Pozíció:
-        <select name="position">
-            <?php foreach ($positions as $pos): ?>
-                <option value="<?= $pos['JOB_ID'] ?>"><?= $pos['JOB_NAME'] ?></option>
-            <?php endforeach; ?>
-        </select>
-    </label><br>
+<label>Pozíció:
+    <input type="text" name="position" id="position-input" autocomplete="off" required>
+    <div id="suggestions" class="autocomplete-suggestions"></div>
+</label><br>
+
 
     <label>Munkarend:
         <select name="schedule">

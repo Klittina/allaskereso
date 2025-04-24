@@ -67,7 +67,7 @@ $applications = [];
 $adIds = array_column($ads, 'AD_ID');
 if (!empty($adIds)) {
     $inClause = implode(',', array_map('intval', $adIds));
-    $queryApps = "SELECT a.app_id, a.app_ad, a.app_date, a.app_stat, u.firstname, u.lastname, cv.cv_file 
+    $queryApps = "SELECT a.app_id, a.app_ad, a.app_date, a.app_stat, u.firstname, u.lastname, cv.cv_path 
                   FROM application a
                   JOIN cv ON a.app_cv = cv.cv_id
                   JOIN users u ON cv.cv_user = u.user_id
