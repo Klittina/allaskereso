@@ -1,47 +1,47 @@
-/* Alap stílusok */
+
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
 }
 
-/* Navigációs sáv középen */
+
 nav {
-    background-color: #007bff;
+    background-color: #ae8060;
     color: white;
-    width: 80%; /* Szélesség a csíknak, középen */
-    max-width: 1200px; /* Maximális szélesség */
-    margin: 0 auto; /* Középre igazítjuk */
+    width: 80%; 
+    max-width: 1200px; 
+    margin: 0 auto; 
     padding: 10px 0;
     display: flex;
-    justify-content: flex-start; /* Balra igazítjuk az elemeket */
-    align-items: center; /* Középre igazítjuk a tartalmat vertikálisan */
-    border-radius: 5px; /* Lekerekített sarkok */
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 5px;
 }
 
-/* Linkek stílusa a navigációban */
+
 nav a {
     text-decoration: none;
     color: white;
     padding: 12px 20px;
-    display: block; /* A linkek blokk szintűek */
+    display: block;
     font-weight: 500;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-right: 20px; /* Távolság az egyes linkek között */
+    margin-right: 20px;
 }
 
-/* Hover effektusok a menüpontokon */
+
 nav a:hover {
     background-color: #0056b3;
     transform: scale(1.05);
 }
 
-/* Dropdown menü */
+
 .dropdown {
     position: relative;
 }
 
-/* Dropdown tartalom */
+
 .dropdown-content {
     display: none;
     position: absolute;
@@ -55,7 +55,7 @@ nav a:hover {
     transition: opacity 0.3s ease;
 }
 
-/* Dropdown elemek */
+
 .dropdown-content a {
     padding: 12px 20px;
     display: block;
@@ -63,16 +63,16 @@ nav a:hover {
     font-weight: 400;
 }
 
-/* Dropdown menü megjelenítése */
+
 .dropdown:hover .dropdown-content {
     display: block;
     opacity: 1;
 }
 
-/* Reszponzív dizájn, kisebb képernyőkön */
+
 @media (max-width: 768px) {
     nav {
-        width: 95%; /* Szélesebb a navigáció kisebb képernyőkön */
+        width: 95%;
     }
 
     nav a {
@@ -80,12 +80,12 @@ nav a:hover {
     }
 
     .dropdown-content {
-        width: 100%; /* 100%-os szélesség */
+        width: 100%;
     }
 }
 
 
-/* assets/styles.css */
+
 .error-message {
     color: #c0392b;
     background-color: #f9d6d5;
