@@ -43,7 +43,7 @@ session_start();
         </div>
     <?php endif; ?>
 </nav>
-    <div class="container">
+    
         <h1>Cég regisztráció</h1>
         <?php if (isset($_SESSION['error'])): ?>
     <div class="error-message"><?= htmlspecialchars($_SESSION['error']) ?></div>
@@ -92,6 +92,5 @@ session_start();
 
             <button type="submit">Regisztráció</button>
         </form>
-    </div>
 </body>
 </html>

@@ -1,0 +1,179 @@
+/* Alap stílusok */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5efe7;
+}
+
+/* Navigációs sáv középen */
+nav {
+    background-color: #007bff;
+    color: white;
+    width: 80%; /* Szélesség a csíknak, középen */
+    max-width: 1200px; /* Maximális szélesség */
+    margin: 0 auto; /* Középre igazítjuk */
+    padding: 10px 0;
+    display: flex;
+    justify-content: flex-start; /* Balra igazítjuk az elemeket */
+    align-items: center; /* Középre igazítjuk a tartalmat vertikálisan */
+    border-radius: 5px; /* Lekerekített sarkok */
+}
+
+/* Linkek stílusa a navigációban */
+nav a {
+    text-decoration: none;
+    color: white;
+    padding: 12px 20px;
+    display: block; /* A linkek blokk szintűek */
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-right: 20px; /* Távolság az egyes linkek között */
+}
+
+/* Hover effektusok a menüpontokon */
+nav a:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Dropdown menü */
+.dropdown {
+    position: relative;
+}
+
+/* Dropdown tartalom */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #007bff;
+    width: 200px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    z-index: 1;
+    border-radius: 5px;
+    padding: 5px 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Dropdown elemek */
+.dropdown-content a {
+    padding: 12px 20px;
+    display: block;
+    color: white;
+    font-weight: 400;
+}
+
+/* Dropdown menü megjelenítése */
+.dropdown:hover .dropdown-content {
+    display: block;
+    opacity: 1;
+}
+
+/* Reszponzív dizájn, kisebb képernyőkön */
+@media (max-width: 768px) {
+    nav {
+        width: 95%; /* Szélesebb a navigáció kisebb képernyőkön */
+    }
+
+    nav a {
+        padding: 10px 15px;
+    }
+
+    .dropdown-content {
+        width: 100%; /* 100%-os szélesség */
+    }
+}
+
+
+/* assets/styles.css */
+.error-message {
+    color: #c0392b;
+    background-color: #f9d6d5;
+    padding: 10px 15px;
+    border: 1px solid #e74c3c;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 2rem;
+    background: #fdfdfd;
+}
+
+.container {
+    background-color: #eae0d5;
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+form label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #3b3b3b;
+}
+
+nav {
+    margin-bottom: 1.5rem;
+}
+
+nav a {
+    margin-right: 15px;
+    text-decoration: none;
+    color: #333;
+}
+
+nav a.active {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.success {
+    color: green;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+form input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 20px;
+    background-color: #fdf6ec;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #f0f0f0;
+}
+
+.btn {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-accept {
+    background-color: #28a745;
+    color: white;
+}
