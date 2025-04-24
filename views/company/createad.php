@@ -46,6 +46,7 @@ if (isset($_SESSION['error_message'])) {
     <link rel="stylesheet" href="../../assets/styles.css">
     <script>
 document.addEventListener("DOMContentLoaded", () => {
+    // 🔹 POZÍCIÓ autocomplete
     const input = document.getElementById("position-input");
     const suggestionsBox = document.getElementById("suggestions");
 
@@ -77,8 +78,42 @@ document.addEventListener("DOMContentLoaded", () => {
             suggestionsBox.innerHTML = "";
         }
     });
+
+    // 🔹 NYELV autocomplete
+    const languageInput = document.getElementById("language-input");
+    const languageSuggestions = document.getElementById("language-suggestions");
+
+    languageInput.addEventListener("input", function () {
+        const query = this.value;
+        if (query.length < 1) {
+            languageSuggestions.innerHTML = "";
+            return;
+        }
+
+        fetch(`../../controllers/company/languageAutocomplete.php?q=${encodeURIComponent(query)}`)
+            .then(res => res.json())
+            .then(data => {
+                languageSuggestions.innerHTML = "";
+                data.forEach(item => {
+                    const div = document.createElement("div");
+                    div.textContent = item;
+                    div.addEventListener("click", () => {
+                        languageInput.value = item;
+                        languageSuggestions.innerHTML = "";
+                    });
+                    languageSuggestions.appendChild(div);
+                });
+            });
+    });
+
+    document.addEventListener("click", function (e) {
+        if (!languageSuggestions.contains(e.target) && e.target !== languageInput) {
+            languageSuggestions.innerHTML = "";
+        }
+    });
 });
 </script>
+
 
 </head>
 <body>
@@ -144,12 +179,10 @@ document.addEventListener("DOMContentLoaded", () => {
     </label><br>
 
     <label>Nyelv:
-        <select name="language">
-            <?php foreach ($languages as $lan): ?>
-                <option value="<?= $lan['LAN_ID'] ?>"><?= $lan['LAN_NAME'] ?></option>
-            <?php endforeach; ?>
-        </select>
-    </label><br>
+    <input type="text" name="language" id="language-input" autocomplete="off" required>
+    <div id="language-suggestions" class="autocomplete-suggestions"></div>
+</label><br>
+
 
     <label>Bér (Ft): <input type="number" name="pay" required></label><br>
 
