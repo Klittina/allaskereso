@@ -60,7 +60,6 @@ oci_execute($stid_cv);
     <a href="../index.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'active' : '' ?>">Kezdőlap</a>
 
     <?php if (isset($_SESSION['user_id'])): ?>
-        <!-- Ha a felhasználó be van jelentkezve -->
         <?php if ($_SESSION['user_role'] === 'admin'): ?>
     <a href="admin/admindashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'admindashboard.php') ? 'active' : '' ?>">Admin Dashboard</a>
 <?php elseif ($_SESSION['user_role'] === 'company'): ?>
@@ -70,12 +69,11 @@ oci_execute($stid_cv);
     <?php else: ?>
     <a href="dashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Dashboard</a>
     <a href="user/cvupload.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Önéletrajz</a>
+    <a href="user/lang_examupload.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Új nyelvvizsga</a>
 <?php endif; ?>
 
         <a href="../controllers/logout.php" class="logout">Kijelentkezés</a>
     <?php else: ?>
-        <!-- Ha a felhasználó nincs bejelentkezve -->
-          <!-- 🔽 Bejelentkezés dropdown -->
           <div class="dropdown">
             <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == 'login.php') ? 'active' : '' ?>">Bejelentkezés</a>
             <div class="dropdown-content">
@@ -83,7 +81,6 @@ oci_execute($stid_cv);
                 <a href="login.php?type=company">Bejelentkezés cégként</a>
             </div>
         </div>
-        <!-- Regisztráció dropdown menü -->
         <div class="dropdown">
             <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == './views/register.php') ? 'active' : '' ?>">Regisztráció</a>
             <div class="dropdown-content">

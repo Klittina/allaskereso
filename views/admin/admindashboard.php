@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Ha nincs bejelentkezett admin, átirányítjuk a login oldalra
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     header('Location: ../login.php');
     exit();
@@ -44,7 +43,6 @@ if (!oci_execute($stid)) {
     <a href="../../index.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'active' : '' ?>">Kezdőlap</a>
 
     <?php if (isset($_SESSION['user_id'])): ?>
-        <!-- Ha a felhasználó be van jelentkezve -->
         <?php if ($_SESSION['user_role'] === 'admin'): ?>
     <a href="admindashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'admindashboard.php') ? 'active' : '' ?>">Admin Dashboard</a>
 <?php elseif ($_SESSION['user_role'] === 'company'): ?>
@@ -57,8 +55,6 @@ if (!oci_execute($stid)) {
 
         <a href="../../controllers/logout.php" class="logout">Kijelentkezés</a>
     <?php else: ?>
-        <!-- Ha a felhasználó nincs bejelentkezve -->
-          <!-- 🔽 Bejelentkezés dropdown -->
           <div class="dropdown">
             <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == 'login.php') ? 'active' : '' ?>">Bejelentkezés</a>
             <div class="dropdown-content">
@@ -66,7 +62,6 @@ if (!oci_execute($stid)) {
                 <a href="login.php?type=company">Bejelentkezés cégként</a>
             </div>
         </div>
-        <!-- Regisztráció dropdown menü -->
         <div class="dropdown">
             <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == './views/register.php') ? 'active' : '' ?>">Regisztráció</a>
             <div class="dropdown-content">

@@ -36,7 +36,6 @@ if ((int)$row['ACCEPTED'] === 0) {
     exit();
 }
 
-// Sikeres bejelentkezés
 $_SESSION['user_id'] = $row['CO_ID'];
 $_SESSION['user_email'] = $row['EMAIL'];
 $_SESSION['user_name'] = $row['NAME'];

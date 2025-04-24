@@ -2,13 +2,11 @@
 session_start();
 include('../../config/config.php');
 
-// Csak bejelentkezett cég használhatja
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'company') {
     header('Location: ../../views/login.php');
     exit();
 }
 
-// Segédtáblák lekérdezése
 function getOptions($conn, $table, $idField, $nameField) {
     $query = "SELECT $idField, $nameField FROM $table";
     $stid = oci_parse($conn, $query);
@@ -22,19 +20,18 @@ function getOptions($conn, $table, $idField, $nameField) {
 
 $positions = getOptions($conn, 'job_positions', 'job_id', 'job_name');
 $schedules = getOptions($conn, 'job_schedule', 'sch_id', 'sch_name');
-$qualifications = getOptions($conn, 'qualification', 'qu_id', 'qu_type');  // Ellenőrizd, hogy az oszlop neve valóban 'qu_type'
+$qualifications = getOptions($conn, 'qualification', 'qu_id', 'qu_type'); 
 $languages = getOptions($conn, 'language', 'lan_id', 'lan_name');
 $natures = getOptions($conn, 'job_nature', 'nat_id', 'nat_name');
 
-// Üzenetek megjelenítése
 if (isset($_SESSION['message'])) {
     echo "<div class='success-message'>" . $_SESSION['message'] . "</div>";
-    unset($_SESSION['message']); // Üzenet törlése az egyszeri megjelenítés után
+    unset($_SESSION['message']); 
 }
 
 if (isset($_SESSION['error_message'])) {
     echo "<div class='error-message'>" . $_SESSION['error_message'] . "</div>";
-    unset($_SESSION['error_message']); // Hibaüzenet törlése az egyszeri megjelenítés után
+    unset($_SESSION['error_message']); 
 }
 ?>
 
@@ -46,7 +43,6 @@ if (isset($_SESSION['error_message'])) {
     <link rel="stylesheet" href="../../assets/styles.css">
     <script>
 document.addEventListener("DOMContentLoaded", () => {
-    // 🔹 POZÍCIÓ autocomplete
     const input = document.getElementById("position-input");
     const suggestionsBox = document.getElementById("suggestions");
 
@@ -79,7 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // 🔹 NYELV autocomplete
     const languageInput = document.getElementById("language-input");
     const languageSuggestions = document.getElementById("language-suggestions");
 
@@ -121,7 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
     <a href="../../index.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'active' : '' ?>">Kezdőlap</a>
 
     <?php if (isset($_SESSION['user_id'])): ?>
-        <!-- Ha a felhasználó be van jelentkezve -->
         <?php if ($_SESSION['user_role'] === 'admin'): ?>
     <a href="./views/admin/admindashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'admindashboard.php') ? 'active' : '' ?>">Admin Dashboard</a>
 <?php elseif ($_SESSION['user_role'] === 'company'): ?>
@@ -134,8 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         <a href="../../controllers/logout.php" class="logout">Kijelentkezés</a>
     <?php else: ?>
-        <!-- Ha a felhasználó nincs bejelentkezve -->
-          <!-- 🔽 Bejelentkezés dropdown -->
           <div class="dropdown">
             <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == 'login.php') ? 'active' : '' ?>">Bejelentkezés</a>
             <div class="dropdown-content">
@@ -143,7 +135,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 <a href="login.php?type=company">Bejelentkezés cégként</a>
             </div>
         </div>
-        <!-- Regisztráció dropdown menü -->
         <div class="dropdown">
             <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == './views/register.php') ? 'active' : '' ?>">Regisztráció</a>
             <div class="dropdown-content">
@@ -173,7 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <label>Képzettség:
         <select name="qualification">
             <?php foreach ($qualifications as $qual): ?>
-                <option value="<?= $qual['QU_ID'] ?>"><?= $qual['QU_TYPE'] ?></option> <!-- Ellenőrizd, hogy a helyes oszlopnevet használd -->
+                <option value="<?= $qual['QU_ID'] ?>"><?= $qual['QU_TYPE'] ?></option>
             <?php endforeach; ?>
         </select>
     </label><br>

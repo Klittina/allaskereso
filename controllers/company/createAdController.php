@@ -2,22 +2,19 @@
 session_start();
 include('../../config/config.php');
 
-// Csak bejelentkezett cég használhatja
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'company') {
     header('Location: ../../views/login.php');
     exit();
 }
 
-// A form adatainak lekérése
-$positionName = trim($_POST['position']); // szöveges pozíció
+$positionName = trim($_POST['position']); 
 $schedule = $_POST['schedule'];
 $qualification = $_POST['qualification'];
-$languageName = trim($_POST['language']); // szöveges nyelv
+$languageName = trim($_POST['language']); 
 $pay = $_POST['pay'];
 $text = $_POST['text'];
 $natures = isset($_POST['natures']) ? $_POST['natures'] : [];
 
-// POZÍCIÓ kezelése (ha új, beszúrjuk)
 $checkPosQuery = "SELECT job_id FROM job_positions WHERE LOWER(job_name) = LOWER(:job_name)";
 $checkPosStid = oci_parse($conn, $checkPosQuery);
 oci_bind_by_name($checkPosStid, ":job_name", $positionName);
@@ -34,7 +31,6 @@ if ($rowPos) {
     oci_execute($insertPosStid);
 }
 
-// NYELV kezelése (ha új, beszúrjuk)
 $checkLanQuery = "SELECT lan_id FROM language WHERE LOWER(lan_name) = LOWER(:lan_name)";
 $checkLanStid = oci_parse($conn, $checkLanQuery);
 oci_bind_by_name($checkLanStid, ":lan_name", $languageName);
@@ -51,7 +47,6 @@ if ($rowLan) {
     oci_execute($insertLanStid);
 }
 
-// Hirdetés létrehozása
 $query = "INSERT INTO job_advertisement (ad_co, ad_po, ad_sch, ad_qualification, ad_pay, ad_status, ad_lan, ad_date, ad_text) 
           VALUES (:ad_co, :ad_po, :ad_sch, :ad_qualification, :ad_pay, 0, :ad_lan, SYSDATE, :ad_text)
           RETURNING ad_id INTO :ad_id";
@@ -62,7 +57,7 @@ oci_bind_by_name($stid, ":ad_po", $positionId);
 oci_bind_by_name($stid, ":ad_sch", $schedule);
 oci_bind_by_name($stid, ":ad_qualification", $qualification);
 oci_bind_by_name($stid, ":ad_pay", $pay);
-oci_bind_by_name($stid, ":ad_lan", $languageId); // az új/létező nyelv ID
+oci_bind_by_name($stid, ":ad_lan", $languageId); 
 oci_bind_by_name($stid, ":ad_text", $text);
 oci_bind_by_name($stid, ":ad_id", $ad_id, 32);
 

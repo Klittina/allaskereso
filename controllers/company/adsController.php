@@ -2,23 +2,19 @@
 session_start();
 include('../../config/config.php');
 
-// Csak bejelentkezett cég használhatja
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'company') {
     header('Location: ../../views/login.php');
     exit();
 }
 
-// Művelet meghatározása
 $action = $_GET['action'] ?? '';
 
 switch ($action) {
 
-    // === TÖRLÉS ===
     case 'delete':
         if (isset($_GET['id'])) {
             $ad_id = $_GET['id'];
 
-            // Ellenőrizzük, hogy valóban a saját hirdetése
             $checkQuery = "SELECT ad_id FROM job_advertisement WHERE ad_id = :id AND ad_co = :co";
             $checkStid = oci_parse($conn, $checkQuery);
             oci_bind_by_name($checkStid, ':id', $ad_id);
@@ -37,7 +33,6 @@ switch ($action) {
         }
         break;
 
-    // === MÓDOSÍTÁS ===
     case 'update':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ad_id = $_POST['ad_id'];
@@ -49,7 +44,6 @@ switch ($action) {
             $language = $_POST['language'];
             $status = isset($_POST['status']) ? 1 : 0;
 
-            // Alap adatok frissítése
             $updateQuery = "UPDATE job_advertisement SET 
                 ad_po = :pos, 
                 ad_sch = :sch, 
@@ -71,7 +65,6 @@ switch ($action) {
             oci_bind_by_name($updateStid, ':co', $_SESSION['user_id']);
             oci_execute($updateStid);
 
-            // Munkavégzés jellege (törlés + új beszúrás)
             $deleteNature = oci_parse($conn, "DELETE FROM job_ad_nature WHERE job_ad_id = :id");
             oci_bind_by_name($deleteNature, ':id', $ad_id);
             oci_execute($deleteNature);
@@ -94,6 +87,5 @@ switch ($action) {
         break;
 }
 
-// Visszairányítás hirdetés listához
 header("Location: ../../views/company/companyads.php");
 exit();
