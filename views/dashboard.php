@@ -62,17 +62,27 @@ oci_execute($stid_cv);
     <?php if (isset($_SESSION['user_id'])): ?>
         <!-- Ha a felhasználó be van jelentkezve -->
         <?php if ($_SESSION['user_role'] === 'admin'): ?>
-            <!-- Ha admin a felhasználó, akkor az admin dashboardra irányítunk -->
-            <a href="views/admin/admindashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == './views/admin/admindashboard.php') ? 'active' : '' ?>">Admin Dashboard</a>
-        <?php else: ?>
-            <!-- Ha sima felhasználó a bejelentkezett felhasználó, akkor a sima dashboardra -->
-            <a href="views/dashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == './views/dashboard.php') ? 'active' : '' ?>">Dashboard</a>
-        <?php endif; ?>
+    <a href="admin/admindashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'admindashboard.php') ? 'active' : '' ?>">Admin Dashboard</a>
+<?php elseif ($_SESSION['user_role'] === 'company'): ?>
+    <a href="companydashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Cég Dashboard</a>
+    <a href="createad.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'createad.php') ? 'active' : '' ?>">Álláshirdetés létrehozása</a>
+    <a href="companyads.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'companyads.php') ? 'active' : '' ?>">Álláshirdetések</a>
+    <?php else: ?>
+    <a href="dashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Dashboard</a>
+    <a href="user/cvupload.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Önéletrajz</a>
+<?php endif; ?>
+
         <a href="../controllers/logout.php" class="logout">Kijelentkezés</a>
     <?php else: ?>
         <!-- Ha a felhasználó nincs bejelentkezve -->
-        <a href="login.php" class="<?= (basename($_SERVER['PHP_SELF']) == './views/login.php') ? 'active' : '' ?>">Bejelentkezés</a>
-        
+          <!-- 🔽 Bejelentkezés dropdown -->
+          <div class="dropdown">
+            <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == 'login.php') ? 'active' : '' ?>">Bejelentkezés</a>
+            <div class="dropdown-content">
+                <a href="../login.php?type=user">Bejelentkezés magánszemélyként</a>
+                <a href="login.php?type=company">Bejelentkezés cégként</a>
+            </div>
+        </div>
         <!-- Regisztráció dropdown menü -->
         <div class="dropdown">
             <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == './views/register.php') ? 'active' : '' ?>">Regisztráció</a>
@@ -86,8 +96,7 @@ oci_execute($stid_cv);
     <h1>Felhasználói adatok</h1>
     <p><strong>Név:</strong> <?= htmlspecialchars($user['FIRSTNAME'] . ' ' . $user['LASTNAME']) ?></p>
     <p><strong>Email:</strong> <?= htmlspecialchars($user['EMAIL']) ?></p>
-    <p><strong>Telefonszám:</strong> <?= htmlspecialchars($user['PHONE']) ?></p>
-    <p><a href="../logout.php">Kijelentkezés</a></p>
+    <p><strong>Telefonszám:</strong> <?= htmlspecialchars($user['PHONE']) ?></p>    
 
     <h2>Iskolai végzettségek</h2>
     <ul>
@@ -104,10 +113,18 @@ oci_execute($stid_cv);
     </ul>
 
     <h2>Önéletrajzok</h2>
-    <ul>
-        <?php while ($row = oci_fetch_assoc($stid_cv)): ?>
-            <li><a href="<?= $row['CV_PATH'] ?>" target="_blank"><?= $row['LAN_NAME'] ?? 'Nincs nyelv megadva' ?></a></li>
-        <?php endwhile; ?>
-    </ul>
+<div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+    <?php while ($row = oci_fetch_assoc($stid_cv)): ?>
+        <div style="border: 1px solid #ccc; padding: 1rem; border-radius: 8px; width: 250px; box-shadow: 2px 2px 6px #ddd;">
+            <p><strong>Nyelv:</strong> <?= $row['LAN_NAME'] ?? 'Nincs megadva' ?></p>
+            <a href="<?= htmlspecialchars($row['CV_PATH']) ?>" target="_blank" style="color: blue; text-decoration: underline;">Megnyitás</a>
+            <form action="../controllers/user/delete_cv.php" method="POST" style="margin-top: 0.5rem;">
+                <input type="hidden" name="cv_path" value="<?= htmlspecialchars($row['CV_PATH']) ?>">
+                <button type="submit" style="background-color: red; color: white; border: none; padding: 0.5rem; border-radius: 4px; cursor: pointer;">Törlés</button>
+            </form>
+        </div>
+    <?php endwhile; ?>
+</div>
+
 </body>
 </html>
