@@ -1,11 +1,11 @@
-/* Alap stílusok */
+
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
 }
 
-/* Navigációs sáv középen */
+
 nav {
     background-color: #007bff;
     color: white;
@@ -19,7 +19,7 @@ nav {
     border-radius: 5px; /* Lekerekített sarkok */
 }
 
-/* Linkek stílusa a navigációban */
+
 nav a {
     text-decoration: none;
     color: white;
@@ -30,18 +30,18 @@ nav a {
     margin-right: 20px; /* Távolság az egyes linkek között */
 }
 
-/* Hover effektusok a menüpontokon */
+
 nav a:hover {
     background-color: #0056b3;
     transform: scale(1.05);
 }
 
-/* Dropdown menü */
+
 .dropdown {
     position: relative;
 }
 
-/* Dropdown tartalom */
+
 .dropdown-content {
     display: none;
     position: absolute;
@@ -55,7 +55,7 @@ nav a:hover {
     transition: opacity 0.3s ease;
 }
 
-/* Dropdown elemek */
+
 .dropdown-content a {
     padding: 12px 20px;
     display: block;
@@ -63,13 +63,13 @@ nav a:hover {
     font-weight: 400;
 }
 
-/* Dropdown menü megjelenítése */
+
 .dropdown:hover .dropdown-content {
     display: block;
     opacity: 1;
 }
 
-/* Reszponzív dizájn, kisebb képernyőkön */
+
 @media (max-width: 768px) {
     nav {
         width: 95%; /* Szélesebb a navigáció kisebb képernyőkön */
@@ -85,7 +85,7 @@ nav a:hover {
 }
 
 
-/* assets/styles.css */
+
 .error-message {
     color: #c0392b;
     background-color: #f9d6d5;
