@@ -137,5 +137,50 @@ if (!oci_execute($stid)) {
 
         <button type="submit">Regisztrálás</button>
     </form>
+
+    <h2>Új álláshirdetések jóváhagyása</h2>
+
+<?php
+$jobSql = "SELECT j.*, c.name AS company_name, p.job_name AS position_title
+FROM job_advertisement j
+JOIN company c ON j.ad_co = c.co_id
+JOIN job_positions p ON j.ad_po = p.job_id
+WHERE j.ad_status = 0
+AND p.job_name_valid = 0";
+
+$jobStid = oci_parse($conn, $jobSql);
+oci_execute($jobStid);
+?>
+
+<table>
+    <thead>
+        <tr>
+            <th>Pozíció</th>
+            <th>Leírás</th>
+            <th>Cég</th>
+            <th>Művelet</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php while ($row = oci_fetch_assoc($jobStid)): ?>
+        <tr>
+            <td><?= htmlspecialchars($row['POSITION_TITLE']) ?></td>
+            <td><?= htmlspecialchars($row['AD_TEXT']) ?></td>
+            <td><?= htmlspecialchars($row['COMPANY_NAME']) ?></td>
+            <td>
+                <td>
+    <form action="../../controllers/admin/handleJobAd.php" method="POST" style="display:inline-block;">
+        <input type="hidden" name="job_id" value="<?= htmlspecialchars($row['AD_ID']) ?>">
+        <button type="submit" name="action" value="accept">Elfogadás</button>
+        <button type="submit" name="action" value="reject">Elutasítás</button>
+    </form>
+</td>
+
+            </td>
+        </tr>
+    <?php endwhile; ?>
+    </tbody>
+</table>
+
 </body>
 </html>

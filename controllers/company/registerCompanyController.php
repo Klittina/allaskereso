@@ -69,13 +69,10 @@ oci_bind_by_name($stid, ":zipcode", $zipcode);
 oci_bind_by_name($stid, ":street", $street);
 oci_bind_by_name($stid, ":num", $num);
 
-oci_execute($stid);
-oci_commit($conn); 
-
 if (oci_execute($stid)) {
-    oci_commit($conn);
+    oci_commit($conn);  // csak akkor commitálj, ha sikeres volt a művelet
     $_SESSION['success'] = "A cég sikeresen regisztrálva lett!";
-    header("Location: ../../views/login.php");
+    header("Location: ../../views/company/login.php");
     exit();
 } else {
     $e = oci_error($stid);

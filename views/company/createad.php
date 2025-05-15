@@ -6,7 +6,16 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'company') {
     header('Location: ../../views/login.php');
     exit();
 }
-
+if (isset($_SESSION['message'])) {
+    $msg = addslashes($_SESSION['message']); // biztonságos JavaScripthez
+    echo "<script>alert('$msg');</script>";
+    unset($_SESSION['message']);
+}
+if (isset($_SESSION['error_message'])) {
+    $errMsg = addslashes($_SESSION['error_message']);
+    echo "<script>alert('$errMsg');</script>";
+    unset($_SESSION['error_message']);
+}
 function getOptions($conn, $table, $idField, $nameField) {
     $query = "SELECT $idField, $nameField FROM $table";
     $stid = oci_parse($conn, $query);
@@ -18,7 +27,7 @@ function getOptions($conn, $table, $idField, $nameField) {
     return $results;
 }
 
-$positions = getOptions($conn, 'job_positions', 'job_id', 'job_name');
+$positions = getOptions($conn, 'job_positions WHERE job_name_valid = 1', 'job_id', 'job_name');
 $schedules = getOptions($conn, 'job_schedule', 'sch_id', 'sch_name');
 $qualifications = getOptions($conn, 'qualification', 'qu_id', 'qu_type'); 
 $languages = getOptions($conn, 'language', 'lan_id', 'lan_name');
