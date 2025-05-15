@@ -183,6 +183,7 @@ oci_close($conn);
     <tbody>
     <?php if (!empty($data)): ?>
         <?php foreach ($data as $row): ?>
+            <a href="application.php?app_id=' . $row[ja.ad_id] . '">
             <tr>
                 <td><?= htmlspecialchars($row['POSITIONNAME']) ?></td>
                 <td><?= htmlspecialchars($row['SCHEDULE']) ?></td>
@@ -192,6 +193,7 @@ oci_close($conn);
                 <td><?= htmlspecialchars($row['TEXT']) ?></td>
                 <td><?= htmlspecialchars($row['NATURES']) ?></td>
             </tr>
+            </a>
         <?php endforeach; ?>
     <?php else: ?>
         <tr><td colspan="7">Nincs találat.</td></tr>
