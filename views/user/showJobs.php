@@ -90,7 +90,7 @@ oci_close($conn);
 
     <div class="navbar-center">
         <a href="showJobs.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'showJobs.php') ? 'active' : '' ?>">Állások</a>
-        <a href="applications.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'applications.php') ? 'active' : '' ?>">Jelentkezéseim</a>
+        <a href="application.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'applications.php') ? 'active' : '' ?>">Jelentkezéseim</a>
     </div>
 
     <div class="navbar-right">
@@ -183,9 +183,8 @@ oci_close($conn);
     <tbody>
     <?php if (!empty($data)): ?>
         <?php foreach ($data as $row): ?>
-            <a href="application.php?app_id=' . $row[ja.ad_id] . '">
             <tr>
-                <td><?= htmlspecialchars($row['POSITIONNAME']) ?></td>
+                <td><a href="application.php?app_id=' . $row[ja.ad_id] . '"><?= htmlspecialchars($row['POSITIONNAME']) ?></a></td>
                 <td><?= htmlspecialchars($row['SCHEDULE']) ?></td>
                 <td><?= htmlspecialchars($row['QUALIFICATION']) ?></td>
                 <td><?= htmlspecialchars($row['LANGUAGENAME']) ?></td>
@@ -193,7 +192,6 @@ oci_close($conn);
                 <td><?= htmlspecialchars($row['TEXT']) ?></td>
                 <td><?= htmlspecialchars($row['NATURES']) ?></td>
             </tr>
-            </a>
         <?php endforeach; ?>
     <?php else: ?>
         <tr><td colspan="7">Nincs találat.</td></tr>

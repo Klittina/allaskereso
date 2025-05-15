@@ -11,33 +11,49 @@ session_start();
     <script src="../../assets/js/formValidation.js"></script>
 </head>
 <body>
-<nav>
-    <a href="../../index.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'active' : '' ?>">Kezdőlap</a>
+<nav class="navbar">
+    <div class="navbar-left">
+        <a href="../../index.php" class="logo">HireMePls</a>
+    </div>
 
-    <?php if (isset($_SESSION['user_id'])): ?>
-        <?php if ($_SESSION['user_role'] === 'admin'): ?>
-            <a href="views/admin/admindashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == './views/admin/admindashboard.php') ? 'active' : '' ?>">Admin Dashboard</a>
+    <div class="navbar-center">
+        <a href="showJobs.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'showJobs.php') ? 'active' : '' ?>">Állások</a>
+        <a href="application.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'applications.php') ? 'active' : '' ?>">Jelentkezéseim</a>
+    </div>
+
+    <div class="navbar-right">
+        <?php if (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'user'): ?>
+            <div class="dropdown">
+                <button class="dropbtn">Profilom ▼</button>
+                <div class="dropdown-content">
+                    <a href="../../views/dashboard.php">Profilom</a>
+                    <a href="cvupload.php">Önéletrajz</a>
+                    <a href="lang_examupload.php">Új nyelvvizsga</a>
+                    <a href="newschool.php">Új képzettség</a>
+                    <a href="../../controllers/logout.php" class="logout">Kijelentkezés</a>
+                </div>
+            </div>
         <?php else: ?>
-            <a href="views/dashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == './views/dashboard.php') ? 'active' : '' ?>">Dashboard</a>
+            <!-- Bejelentkezés/Regisztráció ha nincs bejelentkezve -->
+            <div class="dropdown">
+                <button class="dropbtn">Bejelentkezés</button>
+                <div class="dropdown-content">
+                    <a href="../login.php">Magánszemély</a>
+                    <a href="login.php">Cég</a>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button class="dropbtn">Regisztráció</button>
+                <div class="dropdown-content">
+                    <a href="../register.ph">Magánszemély</a>
+                    <a href="register.php">Cég</a>
+                </div>
+            </div>
         <?php endif; ?>
-        <a href="../../controllers/logout.php" class="logout">Kijelentkezés</a>
-    <?php else: ?>
-          <div class="dropdown">
-            <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == 'login.php') ? 'active' : '' ?>">Bejelentkezés</a>
-            <div class="dropdown-content">
-                <a href="../login.php?type=user">Bejelentkezés magánszemélyként</a>
-                <a href="login.php?type=company">Bejelentkezés cégként</a>
-            </div>
-        </div>
-        <div class="dropdown">
-            <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == './views/register.php') ? 'active' : '' ?>">Regisztráció</a>
-            <div class="dropdown-content">
-                <a href="../register.php?type=individual">Regisztráció magánszemélyként</a>
-                <a href="register.php?type=company">Regisztráció cégként</a>
-            </div>
-        </div>
-    <?php endif; ?>
+    </div>
 </nav>
+
     <h2>Cég bejelentkezés</h2>
 
     <?php if (isset($_SESSION['error'])): ?>
@@ -53,6 +69,5 @@ session_start();
 
         <button type="submit">Bejelentkezés</button>
     </form>
-    <p><a href="../../index.php">⬅Vissza a főoldalra</a></p>
 </body>
 </html>
