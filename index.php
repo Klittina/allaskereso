@@ -10,44 +10,57 @@ session_start();
     <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
-    <h1>Üdvözöllek a weboldalon!</h1>
+<nav class="navbar">
+    <div class="navbar-left">
+        <a href="index.php" class="logo">HireMePls</a>
+    </div>
 
-    <nav>
-    <a href="index.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'active' : '' ?>">Kezdőlap</a>
+    <div class="navbar-center">
+        <a href="./views/user/showJobs.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'showJobs.php') ? 'active' : '' ?>">Állások</a>
+        <a href="applications.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'applications.php') ? 'active' : '' ?>">Jelentkezéseim</a>
+    </div>
 
-    <?php if (isset($_SESSION['user_id'])): ?>
-        <?php if ($_SESSION['user_role'] === 'admin'): ?>
-    <a href="./views/admin/admindashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'admindashboard.php') ? 'active' : '' ?>">Admin Dashboard</a>
-<?php elseif ($_SESSION['user_role'] === 'company'): ?>
-    <a href="views/company/companydashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Cég Dashboard</a>
-    <a href="views/company/createad.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'createad.php') ? 'active' : '' ?>">Álláshirdetés létrehozása</a>
-    <a href="views/company/companyads.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'companyads.php') ? 'active' : '' ?>">Álláshirdetések</a>
-    <?php else: ?>
-    <a href="./views/dashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Dashboard</a>
-    <a href="./views/user/cvupload.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Önéletrajz</a>
-    <a href="./views/user/lang_examupload.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Új nyelvvizsga</a>
-    <a href="./views/user/newschool.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Új képzettség</a>
-    <a href="./views/user/showJobs.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Álláshirdetés</a>
-<?php endif; ?>
-
-        <a href="controllers/logout.php" class="logout">Kijelentkezés</a>
-    <?php else: ?>
-          <div class="dropdown">
-            <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == 'login.php') ? 'active' : '' ?>">Bejelentkezés</a>
-            <div class="dropdown-content">
+    <div class="navbar-right">
+        <?php if (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'user'): ?>
+            <div class="dropdown">
+                <button class="dropbtn">Profilom ▼</button>
+                <div class="dropdown-content">
+                    <a href="./views/dashboard.php">Profilom</a>
+                    <a href="./views/user/cvupload.php">Önéletrajz feltöltése</a>
+                    <a href="./views/user/lang_examupload.php">Új nyelvvizsga</a>
+                    <a href="./views/user/newschool.php">Új képzettség</a>
+                    <a href="controllers/logout.php" class="logout">Kijelentkezés</a>
+                </div>
+            </div>
+        <?php else: ?>
+            <!-- Bejelentkezés/Regisztráció ha nincs bejelentkezve -->
+            <div class="dropdown">
+                <button class="dropbtn">Bejelentkezés</button>
+                <div class="dropdown-content">
                 <a href="views/login.php?type=user">Bejelentkezés magánszemélyként</a>
                 <a href="views/company/login.php?type=company">Bejelentkezés cégként</a>
+                </div>
             </div>
-        </div>
-        <div class="dropdown">
-            <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == './views/register.php') ? 'active' : '' ?>">Regisztráció</a>
-            <div class="dropdown-content">
+
+            <div class="dropdown">
+                <button class="dropbtn">Regisztráció</button>
+                <div class="dropdown-content">
                 <a href="views/register.php?type=individual">Regisztráció magánszemélyként</a>
                 <a href="views/company/register.php?type=company">Regisztráció cégként</a>
+                </div>
             </div>
-        </div>
-    <?php endif; ?>
+        <?php endif; ?>
+    </div>
 </nav>
-
+<div class="hero">
+        <div class="hero-text">
+            <h1>Találd meg a <span class="highlight">melót</span>, ami megér<br>egy hétfőt!</h1>
+            <p>Gyors és egyszerű álláskeresés modern felülettel: okos szűrőkkel és személyre szabott ajánlatokkal.<br>
+               Görgess, kattints, jelentkezz – ennyire könnyű is lehet!</p>
+        </div>
+        <div class="hero-image">
+            <img src="img/jobsearch.png" alt="Job search illustration">
+        </div>
+    </div>
 </body>
 </html>
