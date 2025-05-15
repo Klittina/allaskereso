@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'user') {
@@ -17,6 +18,7 @@ oci_execute($stmt);
 $cvList = [];
 while ($row = oci_fetch_assoc($stmt)) {
     $cvList[] = $row;
+}
 
 oci_free_statement($stmt);
 oci_close($conn);
