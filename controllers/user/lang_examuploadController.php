@@ -1,56 +1,23 @@
 <?php
 session_start();
-
 include('../../config/config.php');
 
-$language = $_POST['language'] ?? null;
-$level = $_POST['level'] ?? null;
-$date = $_POST['exam_date'] ?? null;
-$user_id = $_SESSION['user_id'] ?? null;
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!empty($language) && !empty($level) && !empty($date) && !empty($user_id)) {
-        $sql = "INSERT INTO language_certificates (user_id, language, level, exam_date)
-                VALUES (:user_id, :language, :level, TO_DATE(:exam_date, 'YYYY-MM-DD'))";
-
-        $stid = oci_parse($conn, $sql);
-
-        oci_bind_by_name($stid, ":user_id", $user_id);
-        oci_bind_by_name($stid, ":language", $language);
-        oci_bind_by_name($stid, ":level", $level);
-        oci_bind_by_name($stid, ":exam_date", $date);
-
-        if (oci_execute($stid)) {
-            echo "Sikeresen hozzáadva a nyelvvizsga!";
-        } else {
-            $e = oci_error($stid);
-            echo "Hiba történt: " . $e['message'];
-        }
-
-        oci_free_statement($stid);
-    } else {
-        echo "Kérlek, tölts ki minden mezőt!";
-    }
-} else {
-    echo "Érvénytelen kérés!";
-}
-
-// 2. Ellenőrzés: be vagyunk jelentkezve?
+// 1. Ellenőrzés: be vagyunk jelentkezve?
 if (!isset($_SESSION['user_id'])) {
     die("Nincs bejelentkezve.");
 }
 
-// 3. POST adatok ellenőrzése
-$userId   = $_SESSION['user_id'];
-$language = $_POST['language'] ?? null;
-$level    = $_POST['level'] ?? null;
+// 2. POST adatok ellenőrzése
+$userId    = $_SESSION['user_id'];
+$language  = $_POST['language'] ?? null;
+$level     = $_POST['level'] ?? null;
 $exam_date = $_POST['exam_date'] ?? null;
 
 if (!$language || !$level || !$exam_date) {
     die("Hiányzó adat: minden mezőt ki kell tölteni.");
 }
 
-// 3.1. Vizsga szint validálása (backend validáció)
+// 3. Vizsga szint validálása
 $level = trim($level);
 $level = mb_strtolower($level, 'UTF-8');
 $allowed_levels = ['alap', 'közép', 'emelt'];
@@ -61,42 +28,56 @@ if (!in_array($level, $allowed_levels, true)) {
 // 4. Dátum konvertálása Oracle formátumra
 try {
     $dateObj = new DateTime($exam_date);
-    // Az Oracle által elvárt formátum: 'd-M-Y', például: 15-MAY-2025
-    $exam_date_oracle = strtoupper($dateObj->format('d-M-Y'));
+    $exam_date_oracle = strtoupper($dateObj->format('d-M-Y')); // pl. 15-MAY-2025
 } catch (Exception $ex) {
     die("Érvénytelen dátum formátum!");
 }
 
-// 5. SQL lekérdezés készítése
+// 5. SQL lekérdezés
 $sql = "INSERT INTO language_exam (ex_user, ex_lan, ex_level, ex_date) 
         VALUES (:user_id, :lan_id, :exlevel, TO_DATE(:exam_date, 'DD-MON-YYYY'))";
 
-// 6. OCI parszolás
+// 6. Lekérdezés előkészítése
 $stmt = oci_parse($conn, $sql);
 if (!$stmt) {
     $e = oci_error($conn);
     die("OCI parse hiba: " . htmlentities($e['message']));
 }
 
-// 7. Bind változók hozzárendelése
+// 7. Bindelés
 oci_bind_by_name($stmt, ":user_id", $userId);
 oci_bind_by_name($stmt, ":lan_id", $language);
 oci_bind_by_name($stmt, ":exlevel", $level);
 oci_bind_by_name($stmt, ":exam_date", $exam_date_oracle);
 
-// 8. Lekérdezés futtatása
+// 8. Futtatás és trigger hiba feldolgozása
+// 8. Futtatás és trigger hiba feldolgozása
 if (!oci_execute($stmt)) {
     $e = oci_error($stmt);
-    die("OCI execute hiba: " . htmlentities($e['message']));
+    $errorMsg = $e['message'];
+
+    if (strpos($errorMsg, 'ORA-20001') !== false) {
+        // Trigger által dobott hiba
+        preg_match('/ORA-20001: (.+?)ORA-06512:/s', $errorMsg, $matches);
+        $userFriendlyMsg = isset($matches[1]) ? trim($matches[1]) : "Adatbázis hiba történt.";
+
+        echo "<script>alert('❌ $userFriendlyMsg'); window.history.back();</script>";
+        exit;
+    } else {
+        $safeError = htmlentities($errorMsg);
+        echo "<script>alert('Hiba történt: $safeError'); window.history.back();</script>";
+        exit;
+    }
 }
 
-// 9. Commit
-oci_commit($conn);
 
-// 10. Takarítás
+// 9. Commit és zárás
+oci_commit($conn);
 oci_free_statement($stmt);
 oci_close($conn);
 
+// 10. Sikeres visszajelzés és átirányítás
 echo "Sikeres nyelvvizsga hozzáadás!";
-header("Location: ../../views/dashboard.php"); 
+header("Location: ../../views/dashboard.php");
+exit;
 ?>

@@ -1,22 +1,32 @@
 <?php
 session_start();
-
-
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../login.php");
     exit;
 }
-?>
 
+include('../../config/config.php');
+
+// Lekérjük a nyelveket, amik érvényesek
+$sql = "SELECT lan_id, lan_name FROM language WHERE lan_name_valid = 1 ORDER BY lan_name";
+$stid = oci_parse($conn, $sql);
+oci_execute($stid);
+
+$languages = [];
+while ($row = oci_fetch_assoc($stid)) {
+    $languages[] = $row;
+}
+oci_free_statement($stid);
+?>
 <!DOCTYPE html>
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
     <title>Nyelvvizsga hozzáadása</title>
     <link rel="stylesheet" href="../../assets/styles.css">
-    <script src="../../assets/js/formValidation.js"></script>
 </head>
 <body>
+
 <nav class="navbar">
     <div class="navbar-left">
         <a href="../../index.php" class="logo">HireMePls</a>
@@ -59,16 +69,24 @@ if (!isset($_SESSION['user_id'])) {
         <?php endif; ?>
     </div>
 </nav>
-
-    
         <h1>Új nyelvvizsga hozzáadása</h1>
 
-        <form action="../../controllers/user/addLanguageCertificate.php" method="POST" id="regForm" novalidate>
+        <form action="../../controllers/user/lang_examuploadController.php" method="POST">
             <label for="language">Nyelv:</label>
-            <input type="text" name="language" id="language" placeholder="pl. angol" required>
+            <select name="language" id="language" required>
+                <option value="">-- Válassz nyelvet --</option>
+                <?php foreach ($languages as $lan): ?>
+                    <option value="<?= $lan['LAN_ID'] ?>"><?= htmlspecialchars($lan['LAN_NAME']) ?></option>
+                <?php endforeach; ?>
+            </select>
 
-            <label for="level">Szint:</label>
-            <input type="text" name="level" id="level" placeholder="pl. B2" required>
+
+            <select name="level" id="level" required>
+    <option value="">-- Válassz szintet --</option>
+    <option value="alap">alap</option>
+    <option value="közép">közép</option>
+    <option value="emelt">emelt</option>
+</select>
 
             <label for="exam_date">Vizsga dátuma:</label>
             <input type="date" name="exam_date" id="exam_date" required>

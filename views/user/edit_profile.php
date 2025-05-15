@@ -1,6 +1,7 @@
 <?php
 session_start();
-require_once '../../config/database.php';
+include('../../config/config.php');
+
 
 $userId = $_SESSION['user_id'];
 $stmt = $conn->prepare("SELECT name, email FROM users WHERE id = ?");

@@ -1,8 +1,14 @@
-
 <?php
 session_start();
+include('../../config/config.php');
+
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'user') {
     header('Location: login.php');
+    exit();
+}
+
+if (!isset($conn) || !$conn) {
+    echo "<script>alert('Nem sikerült csatlakozni az adatbázishoz!'); window.location.href='showJobs.php';</script>";
     exit();
 }
 
@@ -10,10 +16,11 @@ if (isset($_GET['app_id'])) {
     $_SESSION['selected_job_id'] = (int) $_GET['app_id'];
 }
 
+$userId = $_SESSION['user_id'];
+
 $sql = "SELECT id, title FROM cv WHERE user_id = :userId";
 $stmt = oci_parse($conn, $sql);
 oci_bind_by_name($stmt, ':userId', $userId);
-oci_execute($stmt);
 
 $cvList = [];
 while ($row = oci_fetch_assoc($stmt)) {
@@ -23,6 +30,7 @@ while ($row = oci_fetch_assoc($stmt)) {
 oci_free_statement($stmt);
 oci_close($conn);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="hu">
