@@ -28,15 +28,15 @@ session_start();
         <div class="dropdown">
             <a href="#">Bejelentkezés</a>
             <div class="dropdown-content">
-                <a href="views/login.php?type=user">Magánszemély</a>
-                <a href="views/company/login.php?type=company">Cég</a>
+                <a href="views/login.php?type=user">Bejelentkezés magánszemélyként</a>
+                <a href="views/company/login.php?type=company">Bejelentkezés cégként</a>
             </div>
         </div>
         <div class="dropdown">
             <a href="#">Regisztráció</a>
             <div class="dropdown-content">
-                <a href="views/register.php?type=individual">Magánszemély</a>
-                <a href="views/company/register.php?type=company">Cég</a>
+                <a href="views/register.php?type=individual">Regisztráció magánszemélyként</a>
+                <a href="views/company/register.php?type=company">Regisztráció cégként</a>
             </div>
         </div>
     <?php endif; ?>

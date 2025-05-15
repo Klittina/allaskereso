@@ -86,6 +86,7 @@ if (!empty($adIds)) {
     <meta charset="UTF-8">
     <title>Saját hirdetések</title>
     <link rel="stylesheet" href="../../assets/styles.css">
+    <script src="../../assets/js/formValidation.js"></script>
 </head>
 <body>
 
@@ -93,7 +94,6 @@ if (!empty($adIds)) {
     <a href="../../index.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'active' : '' ?>">Kezdőlap</a>
 
     <?php if (isset($_SESSION['user_id'])): ?>
-        <!-- Ha a felhasználó be van jelentkezve -->
         <?php if ($_SESSION['user_role'] === 'admin'): ?>
     <a href="./views/admin/admindashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'admindashboard.php') ? 'active' : '' ?>">Admin Dashboard</a>
 <?php elseif ($_SESSION['user_role'] === 'company'): ?>
@@ -106,8 +106,6 @@ if (!empty($adIds)) {
 
         <a href="../../controllers/logout.php" class="logout">Kijelentkezés</a>
     <?php else: ?>
-        <!-- Ha a felhasználó nincs bejelentkezve -->
-          <!-- 🔽 Bejelentkezés dropdown -->
           <div class="dropdown">
             <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == 'login.php') ? 'active' : '' ?>">Bejelentkezés</a>
             <div class="dropdown-content">
@@ -115,7 +113,6 @@ if (!empty($adIds)) {
                 <a href="login.php?type=company">Bejelentkezés cégként</a>
             </div>
         </div>
-        <!-- Regisztráció dropdown menü -->
         <div class="dropdown">
             <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == './views/register.php') ? 'active' : '' ?>">Regisztráció</a>
             <div class="dropdown-content">

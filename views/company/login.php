@@ -8,6 +8,7 @@ session_start();
     <meta charset="UTF-8">
     <title>Cég bejelentkezés</title>
     <link rel="stylesheet" href="../../assets/styles.css">
+    <script src="../../assets/js/formValidation.js"></script>
 </head>
 <body>
 <nav>
@@ -49,7 +50,7 @@ session_start();
         <div class="error"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
     <?php endif; ?>
 
-    <form method="POST" action="../../controllers/company/loginCompanyController.php">
+    <form method="POST" action="../../controllers/company/loginCompanyController.php" id="regForm" novalidate>
         <label for="email">Email cím:</label>
         <input type="email" name="email" id="email" required>
 
@@ -58,5 +59,6 @@ session_start();
 
         <button type="submit">Bejelentkezés</button>
     </form>
+    <p><a href="../../index.php">⬅Vissza a főoldalra</a></p>
 </body>
 </html>

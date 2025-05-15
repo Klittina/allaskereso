@@ -2,7 +2,6 @@
 session_start();
 include('../../config/config.php');
 
-// Feltételezve, hogy ezek a POST mezők jönnek az űrlapból
 $language = $_POST['language'] ?? null;
 $level = $_POST['level'] ?? null;
 $date = $_POST['exam_date'] ?? null;

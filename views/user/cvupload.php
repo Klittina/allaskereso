@@ -11,6 +11,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'user') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../assets/styles.css">
+    <script src="../../assets/js/formValidation.js"></script>
     <title>Öntéletrajz feltöltése</title>
 </head>
 <body>
@@ -50,10 +52,16 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'user') {
 </nav>
 
     <h1>Önéletrajz feltöltése</h1>
-    <form action="../../controllers/user/cvuploadController.php" method="POST">
-        <input type="text" name="name" placeholder="Neve" required><br>
-        <input type="text" name="lang" placeholder="CV Nyelve" required><br>
-        <input type="text" name="path" placeholder="CV Elérési útja" required><br>
+    <form action="../../controllers/user/cvuploadController.php" method="POST" id="regForm" novalidate>
+        <label for="email">Teljes név</label>
+        <input type="text" name="name" placeholder="pl.: Horváth Bence" required>
+        <br>
+        <label for="email">Önéletrajz nyelve:</label>
+        <input type="text" name="lang" placeholder="pl.: angol" required>
+        <br>
+        <label for="email">Önéletrajz elérési útja</label>
+        <input type="text" name="path" placeholder="" required>
+        <br>
         <button type="submit">Feltöltés</button>
     </form>
 </body>

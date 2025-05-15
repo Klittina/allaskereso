@@ -1,4 +1,4 @@
-<?php
+<p?php
 session_start();
 ?>
 
@@ -8,6 +8,7 @@ session_start();
     <meta charset="UTF-8">
     <title>Cég Regisztráció</title>
     <link rel="stylesheet" href="../../assets/styles.css">
+    <script src="../../assets/js/formValidation.js"></script>
 </head>
 <body>
 <nav>
@@ -50,45 +51,51 @@ session_start();
     <?php unset($_SESSION['error']); ?>
 <?php endif; ?>
 
-        <form action="../../controllers/company/registerCompanyController.php" method="POST">
-            <label for="name">Cég neve:</label>
-            <input type="text" id="name" name="name" required>
+        <form action="../../controllers/company/registerCompanyController.php" method="POST" id="regForm" novalidate>
+            
+            <h3>Kapcsolattartó személy</h3>
 
-            <label for="email">E-mail:</label>
-            <input type="email" id="email" name="email" required>
+            <label for="co_firstname">Vezetéknév:</label>
+            <input type="text" id="co_firstname" name="co_firstname" placeholder="pl.: Nagy">
 
+            <label for="co_lastname">Keresztnév:</label>
+            <input type="text" id="co_lastname" name="co_lastname" placeholder="pl.: Lajos" required>
+
+            <label for="email">Hivatalos E-mail cím:</label>
+            <input type="email" id="email" name="email" placeholder="pl.: nagy.lajos@hiremepls.hu" required>
+            
             <label for="password">Jelszó:</label>
-            <input type="password" id="password" name="password" required>
+            <input class="passwd" type="password" id="password" name="password" required>
 
             <label for="password_confirm">Jelszó megerősítése:</label>
-            <input type="password" id="password_confirm" name="password_confirm" required>
+            <input class="passwd" type="password" id="password_confirm" name="password_confirm" required>
+            
+            <label for="co_phone">Kapcsolattartó telefonszáma:</label>
+            <input type="tel" id="co_phone" name="co_phone" placeholder="pl.: +36201234567" required>
+
+            
+            <h3>Cég adatok</h3>
+
+            <label for="name">Cég neve:</label>
+            <input type="text" id="name" name="name" placeholder="pl.: Hiremepls Kft." required>
 
             <label for="tax_num">Adószám:</label>
-            <input type="text" id="tax_num" name="tax_num" required>
-
-            <label for="co_firstname">Kapcsolattartó első neve:</label>
-            <input type="text" id="co_firstname" name="co_firstname" required>
-
-            <label for="co_lastname">Kapcsolattartó vezetékneve:</label>
-            <input type="text" id="co_lastname" name="co_lastname" required>
-
-            <label for="co_phone">Kapcsolattartó telefonszáma:</label>
-            <input type="tel" id="co_phone" name="co_phone" required>
+            <input type="text" id="tax_num" name="tax_num" placeholder="pl.: 01234567890" required>
 
             <label for="country">Ország:</label>
-            <input type="text" id="country" name="country" required>
+            <input type="text" id="country" name="country" placeholder="pl.: Magyarország" required>
 
             <label for="city">Város:</label>
-            <input type="text" id="city" name="city" required>
+            <input type="text" id="city" name="city" placeholder="pl.: Budapest" required>
 
             <label for="zipcode">Irányítószám:</label>
-            <input type="text" id="zipcode" name="zipcode" required>
+            <input type="text" id="zipcode" name="zipcode" placeholder="pl.: 6720" required>
 
             <label for="street">Utca:</label>
-            <input type="text" id="street" name="street" required>
+            <input type="text" id="street" name="street" placeholder="pl.: Szent János u." required>
 
             <label for="num">Házszám:</label>
-            <input type="text" id="num" name="num" required>
+            <input type="text" id="num" name="num" placeholder="pl.: 34/B" required>
 
             <button type="submit">Regisztráció</button>
         </form>
