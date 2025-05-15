@@ -16,21 +16,18 @@ $zipcode = $_POST['zipcode'] ?? '';
 $street = $_POST['street'] ?? '';
 $num = $_POST['num'] ?? '';
 
-// Adatok ellenőrzése
 if (empty($name) || empty($email) || empty($password) || empty($password_confirm) || empty($tax_num) || empty($co_firstname) || empty($co_lastname) || empty($co_phone) || empty($country) || empty($city) || empty($zipcode) || empty($street) || empty($num)) {
     $_SESSION['error'] = "Minden mezőt ki kell tölteni!";
     header("Location: ../views/register_company.php");
     exit();
 }
 
-// Jelszavak egyezősége
 if ($password !== $password_confirm) {
     $_SESSION['error'] = "A két jelszó nem egyezik!";
     header("Location: ../views/register_company.php");
     exit();
 }
 
-// ✅ Duplikált email / adószám / telefonszám ellenőrzése itt jön:
 $check_sql = "SELECT email, tax_num, co_phone FROM company WHERE email = :email OR tax_num = :tax_num OR co_phone = :co_phone";
 $check_stid = oci_parse($conn, $check_sql);
 oci_bind_by_name($check_stid, ":email", $email);
@@ -53,10 +50,8 @@ if ($existing = oci_fetch_assoc($check_stid)) {
 }
 
 
-// Jelszó titkosítása
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-// Cég regisztrálása
 $sql = "INSERT INTO company (email, password, name, tax_num, co_firstname, co_lastname, co_phone, country, city, zipcode, street, num, accepted) 
         VALUES (:email, :password, :name, :tax_num, :co_firstname, :co_lastname, :co_phone, :country, :city, :zipcode, :street, :num, 0)";
 
@@ -74,13 +69,10 @@ oci_bind_by_name($stid, ":zipcode", $zipcode);
 oci_bind_by_name($stid, ":street", $street);
 oci_bind_by_name($stid, ":num", $num);
 
-oci_execute($stid);
-oci_commit($conn); // EZ KELL!
-
 if (oci_execute($stid)) {
-    oci_commit($conn);
+    oci_commit($conn);  // csak akkor commitálj, ha sikeres volt a művelet
     $_SESSION['success'] = "A cég sikeresen regisztrálva lett!";
-    header("Location: ../../views/login.php");
+    header("Location: ../../views/company/login.php");
     exit();
 } else {
     $e = oci_error($stid);

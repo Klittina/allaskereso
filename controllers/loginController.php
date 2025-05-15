@@ -19,23 +19,19 @@ oci_execute($stid);
 $user = oci_fetch_assoc($stid);
 
 if ($user && password_verify($password, $user['PASSWORD'])) {
-    // Sikeres bejelentkezés
     $_SESSION['user_id'] = $user['USER_ID'];
     $_SESSION['user_name'] = $user['FIRSTNAME'] . " " . $user['LASTNAME'];
-    $_SESSION['user_role'] = $user['ROLE']; // Ezt a sort hozzáadjuk
+    $_SESSION['user_role'] = $user['ROLE']; 
 
-    // Frissítsük az utolsó bejelentkezési időt
     $update_sql = "UPDATE users SET lastloggedin = CURRENT_TIMESTAMP WHERE user_id = :uid";
     $update_stid = oci_parse($conn, $update_sql);
     oci_bind_by_name($update_stid, ":uid", $user['USER_ID']);
     oci_execute($update_stid);
 
     if ($user['ROLE'] === 'admin') {
-        // Admin dashboard
         header("Location: ../views/admin/admindashboard.php");
         exit();
     } else {
-        // User dashboard
         header("Location: ../views/dashboard.php");
         exit();
     }

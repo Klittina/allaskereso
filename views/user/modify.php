@@ -1,30 +1,31 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'company') {
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'user') {
     header('Location: ../login.php');
     exit();
 }
 
 include('../../config/config.php');
 
-$company_id = $_SESSION['user_id'];
-$sql = "SELECT * FROM company WHERE co_id = :co_id";
+$user_id = $_SESSION['user_id'];
+$sql = "SELECT * FROM user WHERE user_id = :user_id";
 $stid = oci_parse($conn, $sql);
-oci_bind_by_name($stid, ":co_id", $company_id);
+oci_bind_by_name($stid, ":user_id", $user_id);
 oci_execute($stid);
-$company = oci_fetch_assoc($stid);
+$user = oci_fetch_assoc($stid);
 ?>
 
 <!DOCTYPE html>
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
-    <title>Cég Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adatok szerkesztése</title>
     <link rel="stylesheet" href="../../assets/styles.css">
     <script>
         function toggleEdit() {
-            const form = document.getElementById('companyForm');
+            const form = document.getElementById('userForm');
             const inputs = form.querySelectorAll('input');
             const saveBtn = document.getElementById('saveBtn');
             const cancelBtn = document.getElementById('cancelBtn');
@@ -42,9 +43,9 @@ $company = oci_fetch_assoc($stid);
     </script>
 </head>
 <body>
-    <h1>Üdvözöljük, <?= htmlspecialchars($company['NAME']) ?>!</h1>
+<h1>Üdvözöljük, <?= htmlspecialchars($user['NAME']) ?>!</h1>
 
-    <nav>
+<nav>
     <a href="../../index.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'active' : '' ?>">Kezdőlap</a>
 
     <?php if (isset($_SESSION['user_id'])): ?>
@@ -77,18 +78,15 @@ $company = oci_fetch_assoc($stid);
     <?php endif; ?>
 </nav>
 
-    <h2>Cégprofil</h2>
+<h1>Adatok szerkesztése</h1>
 
-    <form id="companyForm" action="../../controllers/company/updateProfile.php" method="post">
-        <label>Név: <input type="text" name="name" value="<?= htmlspecialchars($company['NAME']) ?>" disabled></label><br>
-        <label>Email: <input type="email" name="email" value="<?= htmlspecialchars($company['EMAIL']) ?>" disabled></label><br>
-        <label>Adószám: <input type="text" name="tax_num" value="<?= $company['TAX_NUM'] ?>" disabled></label><br>
-        <label>Kapcsolattartó:
-            <input type="text" name="co_firstname" value="<?= htmlspecialchars($company['CO_FIRSTNAME']) ?>" disabled>
-            <input type="text" name="co_lastname" value="<?= htmlspecialchars($company['CO_LASTNAME']) ?>" disabled>
-        </label><br>
-        <label>Telefon: <input type="text" name="co_phone" value="<?= $company['CO_PHONE'] ?>" disabled></label><br>
-        <label>Város: <input type="text" name="city" value="<?= htmlspecialchars($company['CITY']) ?>" disabled></label><br><br>
+<form id="userForm" action="../../controllers/user/modifyController.php" method="post">
+        <label>Keresztnév: <input type="text" name="first_name" value="<?= htmlspecialchars($user['firstname']) ?>" disabled></label><br>
+        <label>Vezetéknév: <input type="text" name="last_name" value="<?= htmlspecialchars($user['lastname']) ?>" disabled></label><br>
+        <label>Email: <input type="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" disabled></label><br>
+        <label>Jelszó: <input type="password" name="password" value="" disabled></label><br>
+        <label>Telefonszám: <input type="tel" name="phone" value="<?= htmlspecialchars($user['phone']) ?>" disabled></label><br>
+        <label>Születési dátum: <input type="date" name="birth_date" value="<?= htmlspecialchars($user['birth_date']) ?>" disabled></label><br>
 
         <button type="button" id="editBtn" onclick="toggleEdit()">Szerkesztés</button>
         <button type="submit" id="saveBtn" style="display:none;">Mentés</button>
@@ -96,8 +94,9 @@ $company = oci_fetch_assoc($stid);
     </form>
 
     <h2>Profil törlése</h2>
-    <form action="../../controllers/company/deleteProfile.php" method="post" onsubmit="return confirm('Biztosan törölni szeretné a profilját?');">
+    <form action="../../controllers/user/deleteProfile.php" method="post" onsubmit="return confirm('Biztosan törölni szeretné a profilját?');">
         <button type="submit" class="btn-danger">Profil törlése</button>
-    </form>
+    </form>    
+
 </body>
 </html>

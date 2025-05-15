@@ -2,13 +2,13 @@
 session_start();
 include('../../config/config.php');
 
-// Csak cég férhet hozzá
+// Jogosultság ellenőrzése: csak bejelentkezett, cég felhasználók férhetnek hozzá
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'company') {
     header('Location: ../login.php');
     exit();
 }
 
-// Törlés
+// Álláshirdetés törlése
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     $delId = $_POST['delete_id'];
     $query = "DELETE FROM job_advertisement WHERE ad_id = :id AND ad_co = :co";
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     exit();
 }
 
-// Frissítés
+// Álláshirdetés módosítása
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_id'])) {
     $query = "UPDATE job_advertisement 
               SET ad_pay = :pay, ad_text = :text, ad_status = :status 
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_id'])) {
     exit();
 }
 
-// Jelentkezés státusz módosítása
+// Jelentkezés státuszának módosítása (Elfogadás / Elutasítás)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_app_id'], $_POST['status'])) {
     $query = "UPDATE application SET app_stat = :status WHERE app_id = :id";
     $stid = oci_parse($conn, $query);
@@ -48,11 +48,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_app_id'], $_PO
     exit();
 }
 
-// Hirdetések lekérése
-$query = "SELECT ad.*, jp.job_name 
+// Álláshirdetések lekérdezése a bejelentkezett céghez
+$query = "SELECT ad.*, jp.job_name, jp.job_name_valid
           FROM job_advertisement ad
           JOIN job_positions jp ON ad.ad_po = jp.job_id
           WHERE ad.ad_co = :co";
+
 $stid = oci_parse($conn, $query);
 oci_bind_by_name($stid, ":co", $_SESSION['user_id']);
 oci_execute($stid);
@@ -62,12 +63,12 @@ while ($row = oci_fetch_assoc($stid)) {
     $ads[] = $row;
 }
 
-// Jelentkezők lekérése
+// Jelentkezők lekérdezése az adott hirdetésekhez
 $applications = [];
 $adIds = array_column($ads, 'AD_ID');
 if (!empty($adIds)) {
     $inClause = implode(',', array_map('intval', $adIds));
-    $queryApps = "SELECT a.app_id, a.app_ad, a.app_date, a.app_stat, u.firstname, u.lastname, cv.cv_path 
+    $queryApps = "SELECT a.app_id, a.app_ad, a.app_date, a.app_stat, u.firstname, u.lastname, cv.cv_path AS CV_FILE
                   FROM application a
                   JOIN cv ON a.app_cv = cv.cv_id
                   JOIN users u ON cv.cv_user = u.user_id
@@ -95,18 +96,22 @@ if (!empty($adIds)) {
 
     <?php if (isset($_SESSION['user_id'])): ?>
         <?php if ($_SESSION['user_role'] === 'admin'): ?>
-    <a href="./views/admin/admindashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'admindashboard.php') ? 'active' : '' ?>">Admin Dashboard</a>
-<?php elseif ($_SESSION['user_role'] === 'company'): ?>
-    <a href="companydashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Cég Dashboard</a>
-    <a href="createad.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'createad.php') ? 'active' : '' ?>">Álláshirdetés létrehozása</a>
-    <a href="companyads.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'companyads.php') ? 'active' : '' ?>">Álláshirdetések</a>
-    <?php else: ?>
-    <a href="./views/dashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Dashboard</a>
-<?php endif; ?>
+            <a href="./views/admin/admindashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'admindashboard.php') ? 'active' : '' ?>">Admin Dashboard</a>
+        <?php elseif ($_SESSION['user_role'] === 'company'): ?>
+            <a href="companydashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'companydashboard.php') ? 'active' : '' ?>">Cég Dashboard</a>
+            <a href="createad.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'createad.php') ? 'active' : '' ?>">Álláshirdetés létrehozása</a>
+            <a href="companyads.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'companyads.php') ? 'active' : '' ?>">Álláshirdetések</a>
+        <?php else: ?>
+            <a href="./views/dashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Dashboard</a>
+        <?php endif; ?>
 
         <a href="../../controllers/logout.php" class="logout">Kijelentkezés</a>
     <?php else: ?>
+<<<<<<< HEAD
           <div class="dropdown">
+=======
+        <div class="dropdown">
+>>>>>>> 161bd45b772712d73f556cea9d38b19688d4845d
             <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == 'login.php') ? 'active' : '' ?>">Bejelentkezés</a>
             <div class="dropdown-content">
                 <a href="../login.php?type=user">Bejelentkezés magánszemélyként</a>
@@ -114,7 +119,7 @@ if (!empty($adIds)) {
             </div>
         </div>
         <div class="dropdown">
-            <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == './views/register.php') ? 'active' : '' ?>">Regisztráció</a>
+            <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == 'register.php') ? 'active' : '' ?>">Regisztráció</a>
             <div class="dropdown-content">
                 <a href="../register.php?type=individual">Regisztráció magánszemélyként</a>
                 <a href="register.php?type=company">Regisztráció cégként</a>
@@ -127,19 +132,40 @@ if (!empty($adIds)) {
 
 <script>
 function editRow(rowId) {
-    document.querySelectorAll(`#row-${rowId} input, #row-${rowId} textarea`).forEach(el => el.disabled = false);
+    const row = document.getElementById(`row-${rowId}`);
+    const jobNameValid = row.getAttribute('data-job-name-valid');
+
+    // Minden input és textarea engedélyezése, státusz checkbox letiltása ha a pozíció nincs jóváhagyva
+    row.querySelectorAll('input, textarea').forEach(el => {
+        if (el.name === 'status' && jobNameValid === '0') {
+            el.disabled = true;
+        } else {
+            el.disabled = false;
+        }
+    });
+
+    // Figyelmeztetés megjelenítése, ha státusz nem módosítható
+    const warning = row.querySelector('.status-warning');
+    if (warning) {
+        warning.style.display = jobNameValid === '0' ? 'inline' : 'none';
+    }
+
+    // Gombok megjelenítése/elrejtése
     document.getElementById(`edit-${rowId}`).style.display = 'none';
     document.getElementById(`save-${rowId}`).style.display = 'inline';
     document.getElementById(`cancel-${rowId}`).style.display = 'inline';
 }
+
 function cancelEdit(rowId) {
     window.location.reload();
 }
+
 function confirmDelete(formId) {
     if (confirm("Biztosan törölni szeretnéd ezt a hirdetést?")) {
         document.getElementById(formId).submit();
     }
 }
+
 function toggleApplicants(adId) {
     const el = document.getElementById('applicants-' + adId);
     el.style.display = el.style.display === 'none' ? 'block' : 'none';
@@ -147,13 +173,27 @@ function toggleApplicants(adId) {
 </script>
 
 <?php foreach ($ads as $ad): ?>
+    <?php
+        $borderStyle = ($ad['JOB_NAME_VALID'] == 0) ? "border: 2px solid red; padding:10px; margin-bottom:10px;" : "border:1px solid #ccc; padding:10px; margin-bottom:10px;";
+    ?>
     <form method="POST" id="form-<?= $ad['AD_ID'] ?>">
-        <div id="row-<?= $ad['AD_ID'] ?>" style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+        <div id="row-<?= $ad['AD_ID'] ?>" data-job-name-valid="<?= $ad['JOB_NAME_VALID'] ?>" style="<?= $borderStyle ?>">
             <input type="hidden" name="update_id" value="<?= $ad['AD_ID'] ?>">
             <strong>Pozíció:</strong> <?= htmlspecialchars($ad['JOB_NAME']) ?><br>
             <label>Bér (Ft): <input type="number" name="pay" value="<?= $ad['AD_PAY'] ?>" disabled></label><br>
             <label>Leírás: <textarea name="text" disabled><?= htmlspecialchars($ad['AD_TEXT']) ?></textarea></label><br>
-            <label>Aktív: <input type="checkbox" name="status" <?= $ad['AD_STATUS'] == 1 ? 'checked' : '' ?> disabled></label><br>
+            <label>Aktív: 
+                <input 
+                    type="checkbox" 
+                    name="status" 
+                    <?= $ad['AD_STATUS'] == 1 ? 'checked' : '' ?> 
+                    <?= $ad['JOB_NAME_VALID'] == 0 ? 'disabled' : '' ?>
+                >
+            </label><br>
+
+            <small class="status-warning" style="color:red; display:none;">
+                A státusz módosítása nem engedélyezett, amíg a pozíció nincs jóváhagyva.
+            </small>
 
             <button type="button" id="edit-<?= $ad['AD_ID'] ?>" onclick="editRow(<?= $ad['AD_ID'] ?>)">Módosítás</button>
             <button type="submit" id="save-<?= $ad['AD_ID'] ?>" style="display:none;">Mentés</button>
@@ -179,9 +219,9 @@ function toggleApplicants(adId) {
             <?php foreach ($adApplicants as $app): ?>
                 <div style="margin-bottom: 10px;">
                     <p><strong>Név:</strong> <?= htmlspecialchars($app['FIRSTNAME'] . ' ' . $app['LASTNAME']) ?></p>
-                    <p><strong>Önéletrajz:</strong> <a href="../../uploads/<?= $app['CV_FILE'] ?>" target="_blank">Megtekintés</a></p>
-                    <p><strong>Jelentkezés dátuma:</strong> <?= $app['APP_DATE'] ?></p>
-                    <p><strong>Státusz:</strong> <?= $app['APP_STAT'] ?></p>
+                    <p><strong>Önéletrajz:</strong> <a href="../../uploads/<?= htmlspecialchars($app['CV_FILE']) ?>" target="_blank">Megtekintés</a></p>
+                    <p><strong>Jelentkezés dátuma:</strong> <?= htmlspecialchars($app['APP_DATE']) ?></p>
+                    <p><strong>Státusz:</strong> <?= htmlspecialchars($app['APP_STAT']) ?></p>
 
                     <form method="POST" style="display:inline;">
                         <input type="hidden" name="change_app_id" value="<?= $app['APP_ID'] ?>">
@@ -192,15 +232,12 @@ function toggleApplicants(adId) {
                     <form method="POST" style="display:inline;">
                         <input type="hidden" name="change_app_id" value="<?= $app['APP_ID'] ?>">
                         <input type="hidden" name="status" value="Elutasítva">
-                        <button type="submit">Elutasítás</button>
-                    </form>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    <?php else: ?>
-        <p>Még nem jelentkezett senki.</p>
-    <?php endif; ?>
+                        <buttontype="submit">Elutasítás</buttontype=>
+</form>
+</div>
 <?php endforeach; ?>
+</div>
+<?php endif; ?>
+<hr>
 
-</body>
-</html>
+<?php endforeach; ?> </body> </html>

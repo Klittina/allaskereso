@@ -1,9 +1,8 @@
 <?php
 session_start();
 
-// Ha nincs bejelentkezett admin, átirányítjuk a login oldalra
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-    header('Location: login.php');
+    header('Location: ../login.php');
     exit();
 }
 
@@ -44,19 +43,32 @@ if (!oci_execute($stid)) {
     <a href="../../index.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'active' : '' ?>">Kezdőlap</a>
 
     <?php if (isset($_SESSION['user_id'])): ?>
-        <!-- Ha a felhasználó be van jelentkezve -->
         <?php if ($_SESSION['user_role'] === 'admin'): ?>
-            <!-- Ha admin a felhasználó, akkor az admin dashboardra irányítunk -->
-            <a href="./views/admin/admindashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == './views/admin/admindashboard.php') ? 'active' : '' ?>">Admin Dashboard</a>
-        <?php else: ?>
-            <!-- Ha sima felhasználó a bejelentkezett felhasználó, akkor a sima dashboardra -->
-            <a href="./views/dashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == './views/dashboard.php') ? 'active' : '' ?>">Dashboard</a>
-        <?php endif; ?>
+    <a href="admindashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'admindashboard.php') ? 'active' : '' ?>">Admin Dashboard</a>
+<?php elseif ($_SESSION['user_role'] === 'company'): ?>
+    <a href="companydashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Cég Dashboard</a>
+    <a href="createad.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'createad.php') ? 'active' : '' ?>">Álláshirdetés létrehozása</a>
+    <a href="companyads.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'companyads.php') ? 'active' : '' ?>">Álláshirdetések</a>
+    <?php else: ?>
+    <a href="./views/dashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Dashboard</a>
+<?php endif; ?>
+
         <a href="../../controllers/logout.php" class="logout">Kijelentkezés</a>
     <?php else: ?>
-        <!-- Ha a felhasználó nincs bejelentkezve -->
-        <a href="./views/login.php" class="<?= (basename($_SERVER['PHP_SELF']) == './views/login.php') ? 'active' : '' ?>">Bejelentkezés</a>
-        <a href="./views/register.php" class="<?= (basename($_SERVER['PHP_SELF']) == './views/register.php') ? 'active' : '' ?>">Regisztráció</a>
+          <div class="dropdown">
+            <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == 'login.php') ? 'active' : '' ?>">Bejelentkezés</a>
+            <div class="dropdown-content">
+                <a href="../login.php?type=user">Bejelentkezés magánszemélyként</a>
+                <a href="login.php?type=company">Bejelentkezés cégként</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == './views/register.php') ? 'active' : '' ?>">Regisztráció</a>
+            <div class="dropdown-content">
+                <a href="../register.php?type=individual">Regisztráció magánszemélyként</a>
+                <a href="register.php?type=company">Regisztráció cégként</a>
+            </div>
+        </div>
     <?php endif; ?>
 </nav>
 
@@ -125,5 +137,50 @@ if (!oci_execute($stid)) {
 
         <button type="submit">Regisztrálás</button>
     </form>
+
+    <h2>Új álláshirdetések jóváhagyása</h2>
+
+<?php
+$jobSql = "SELECT j.*, c.name AS company_name, p.job_name AS position_title
+FROM job_advertisement j
+JOIN company c ON j.ad_co = c.co_id
+JOIN job_positions p ON j.ad_po = p.job_id
+WHERE j.ad_status = 0
+AND p.job_name_valid = 0";
+
+$jobStid = oci_parse($conn, $jobSql);
+oci_execute($jobStid);
+?>
+
+<table>
+    <thead>
+        <tr>
+            <th>Pozíció</th>
+            <th>Leírás</th>
+            <th>Cég</th>
+            <th>Művelet</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php while ($row = oci_fetch_assoc($jobStid)): ?>
+        <tr>
+            <td><?= htmlspecialchars($row['POSITION_TITLE']) ?></td>
+            <td><?= htmlspecialchars($row['AD_TEXT']) ?></td>
+            <td><?= htmlspecialchars($row['COMPANY_NAME']) ?></td>
+            <td>
+                <td>
+    <form action="../../controllers/admin/handleJobAd.php" method="POST" style="display:inline-block;">
+        <input type="hidden" name="job_id" value="<?= htmlspecialchars($row['AD_ID']) ?>">
+        <button type="submit" name="action" value="accept">Elfogadás</button>
+        <button type="submit" name="action" value="reject">Elutasítás</button>
+    </form>
+</td>
+
+            </td>
+        </tr>
+    <?php endwhile; ?>
+    </tbody>
+</table>
+
 </body>
 </html>

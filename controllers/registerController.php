@@ -16,7 +16,6 @@ $password_confirm = $_POST['password_confirm'];
 $phone = $_POST['phone'];
 $birth_date = $_POST['birth_date'];
 
-// 🔒 Ellenőrizzük, hogy a két jelszó megegyezik-e
 if ($password !== $password_confirm) {
     $_SESSION['error'] = "A jelszavak nem egyeznek meg!";
     header("Location: ../views/register.php");

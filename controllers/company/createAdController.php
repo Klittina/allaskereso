@@ -2,22 +2,22 @@
 session_start();
 include('../../config/config.php');
 
-// Csak bejelentkezett cég használhatja
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'company') {
     header('Location: ../../views/login.php');
     exit();
 }
 
-// A form adatainak lekérése
-$positionName = trim($_POST['position']); // szöveges pozíció
+$positionName = trim($_POST['position']); 
 $schedule = $_POST['schedule'];
 $qualification = $_POST['qualification'];
-$languageName = trim($_POST['language']); // szöveges nyelv
+$languageName = trim($_POST['language']); 
 $pay = $_POST['pay'];
 $text = $_POST['text'];
 $natures = isset($_POST['natures']) ? $_POST['natures'] : [];
 
-// POZÍCIÓ kezelése (ha új, beszúrjuk)
+$positionCreatedMsg = "";  // Ez tárolja majd az értesítést, ha új pozíció lett létrehozva
+
+// Pozíció ellenőrzése
 $checkPosQuery = "SELECT job_id FROM job_positions WHERE LOWER(job_name) = LOWER(:job_name)";
 $checkPosStid = oci_parse($conn, $checkPosQuery);
 oci_bind_by_name($checkPosStid, ":job_name", $positionName);
@@ -27,14 +27,20 @@ $rowPos = oci_fetch_assoc($checkPosStid);
 if ($rowPos) {
     $positionId = $rowPos['JOB_ID'];
 } else {
-    $insertPosQuery = "INSERT INTO job_positions (job_name) VALUES (:job_name) RETURNING job_id INTO :job_id";
+    // Új pozíció beszúrása
+    $insertPosQuery = "INSERT INTO job_positions (job_name, job_name_valid) 
+                       VALUES (:job_name, 0) 
+                       RETURNING job_id INTO :job_id";
     $insertPosStid = oci_parse($conn, $insertPosQuery);
     oci_bind_by_name($insertPosStid, ":job_name", $positionName);
     oci_bind_by_name($insertPosStid, ":job_id", $positionId, 32);
     oci_execute($insertPosStid);
+
+    // Üzenet beállítása, hogy új pozíció lett mentve
+    $positionCreatedMsg = 'Az új pozíció mentésre került, és jóváhagyásra vár.';
 }
 
-// NYELV kezelése (ha új, beszúrjuk)
+// Nyelv ellenőrzése és/vagy beszúrása
 $checkLanQuery = "SELECT lan_id FROM language WHERE LOWER(lan_name) = LOWER(:lan_name)";
 $checkLanStid = oci_parse($conn, $checkLanQuery);
 oci_bind_by_name($checkLanStid, ":lan_name", $languageName);
@@ -51,7 +57,6 @@ if ($rowLan) {
     oci_execute($insertLanStid);
 }
 
-// Hirdetés létrehozása
 $query = "INSERT INTO job_advertisement (ad_co, ad_po, ad_sch, ad_qualification, ad_pay, ad_status, ad_lan, ad_date, ad_text) 
           VALUES (:ad_co, :ad_po, :ad_sch, :ad_qualification, :ad_pay, 0, :ad_lan, SYSDATE, :ad_text)
           RETURNING ad_id INTO :ad_id";
@@ -62,7 +67,7 @@ oci_bind_by_name($stid, ":ad_po", $positionId);
 oci_bind_by_name($stid, ":ad_sch", $schedule);
 oci_bind_by_name($stid, ":ad_qualification", $qualification);
 oci_bind_by_name($stid, ":ad_pay", $pay);
-oci_bind_by_name($stid, ":ad_lan", $languageId); // az új/létező nyelv ID
+oci_bind_by_name($stid, ":ad_lan", $languageId); 
 oci_bind_by_name($stid, ":ad_text", $text);
 oci_bind_by_name($stid, ":ad_id", $ad_id, 32);
 
@@ -75,7 +80,13 @@ if (oci_execute($stid)) {
         oci_execute($natureStid);
     }
 
-    $_SESSION['message'] = 'A hirdetés sikeresen létrejött!';
+    // Ha volt új pozíció, az üzenetet hozzáadjuk a sikeres létrehozás üzenetéhez
+    if ($positionCreatedMsg !== "") {
+        $_SESSION['message'] = 'A hirdetés sikeresen létrejött! ' . $positionCreatedMsg;
+    } else {
+        $_SESSION['message'] = 'A hirdetés sikeresen létrejött!';
+    }
+
     header('Location: ../../views/company/createad.php');
     exit();
 } else {
@@ -83,4 +94,5 @@ if (oci_execute($stid)) {
     header('Location: ../../views/company/createad.php');
     exit();
 }
+
 ?>
