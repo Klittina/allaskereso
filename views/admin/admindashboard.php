@@ -150,37 +150,44 @@ AND p.job_name_valid = 0";
 
 $jobStid = oci_parse($conn, $jobSql);
 oci_execute($jobStid);
-?>
 
-<table>
-    <thead>
-        <tr>
-            <th>Pozíció</th>
-            <th>Leírás</th>
-            <th>Cég</th>
-            <th>Művelet</th>
-        </tr>
-    </thead>
-    <tbody>
-    <?php while ($row = oci_fetch_assoc($jobStid)): ?>
-        <tr>
-            <td><?= htmlspecialchars($row['POSITION_TITLE']) ?></td>
-            <td><?= htmlspecialchars($row['AD_TEXT']) ?></td>
-            <td><?= htmlspecialchars($row['COMPANY_NAME']) ?></td>
-            <td>
+// Ide jön az ellenőrzés és megjelenítés:
+$firstRow = oci_fetch_assoc($jobStid);
+
+if (!$firstRow) {
+    // Nincs találat
+    echo "<p>ezzel kapcsolatban jelenleg nincs teendőxd</p>";
+} else {
+    // Van találat, itt indul a táblázat
+    echo '<table>
+        <thead>
+            <tr>
+                <th>Pozíció</th>
+                <th>Leírás</th>
+                <th>Cég</th>
+                <th>Művelet</th>
+            </tr>
+        </thead>
+        <tbody>';
+
+    do {
+        echo '<tr>
+                <td>' . htmlspecialchars($firstRow['POSITION_TITLE']) . '</td>
+                <td>' . htmlspecialchars($firstRow['AD_TEXT']) . '</td>
+                <td>' . htmlspecialchars($firstRow['COMPANY_NAME']) . '</td>
                 <td>
-    <form action="../../controllers/admin/handleJobAd.php" method="POST" style="display:inline-block;">
-        <input type="hidden" name="job_id" value="<?= htmlspecialchars($row['AD_ID']) ?>">
-        <button type="submit" name="action" value="accept">Elfogadás</button>
-        <button type="submit" name="action" value="reject">Elutasítás</button>
-    </form>
-</td>
+                    <form action="../../controllers/admin/handleJobAd.php" method="POST" style="display:inline-block;">
+                        <input type="hidden" name="job_id" value="' . htmlspecialchars($firstRow['AD_ID']) . '">
+                        <button type="submit" name="action" value="accept">Elfogadás</button>
+                        <button type="submit" name="action" value="reject">Elutasítás</button>
+                    </form>
+                </td>
+            </tr>';
+    } while ($firstRow = oci_fetch_assoc($jobStid));
 
-            </td>
-        </tr>
-    <?php endwhile; ?>
-    </tbody>
-</table>
+    echo '</tbody></table>';
+}
+?>
 
 </body>
 </html>

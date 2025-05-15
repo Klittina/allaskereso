@@ -70,6 +70,7 @@ oci_execute($stid_cv);
     <a href="dashboard.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Dashboard</a>
     <a href="user/cvupload.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Önéletrajz</a>
     <a href="user/lang_examupload.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Új nyelvvizsga</a>
+    <a href="user/newschool.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Új képzettség</a>
 <?php endif; ?>
 
         <a href="../controllers/logout.php" class="logout">Kijelentkezés</a>
@@ -96,11 +97,18 @@ oci_execute($stid_cv);
     <p><strong>Telefonszám:</strong> <?= htmlspecialchars($user['PHONE']) ?></p>    
 
     <h2>Iskolai végzettségek</h2>
-    <ul>
-        <?php while ($row = oci_fetch_assoc($stid_sch)): ?>
-            <li><?= $row['NAME'] ?> (<?= $row['COUNTRY'] ?>), <?= $row['STUD_START'] ?> - <?= $row['STUD_END'] ?> (<?= $row['STUD_GRADE'] ?>)</li>
-        <?php endwhile; ?>
-    </ul>
+<ul>
+    <?php while ($row = oci_fetch_assoc($stid_sch)): ?>
+        <li>
+            <?= htmlspecialchars($row['NAME']) ?> (<?= htmlspecialchars($row['COUNTRY']) ?>), 
+            <?= date('Y.m.d', strtotime($row['STUD_START'])) ?> - 
+            <?= $row['STUD_END'] ? date('Y.m.d', strtotime($row['STUD_END'])) : 'folyamatos' ?> 
+            (<?= htmlspecialchars($row['STUD_GRADE']) ?>)
+        </li>
+    <?php endwhile; ?>
+</ul>
+
+
 
     <h2>Nyelvvizsgák</h2>
     <ul>
