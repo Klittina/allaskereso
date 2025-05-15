@@ -7,20 +7,11 @@ body {
 
 
 nav {
-<<<<<<< HEAD
-    font-family: Arial, sans-serif;
-    background-color: #9e7f59;
-    color: rgb(255, 255, 255);
-    width: 80%; /* Szélesség a csíknak, középen */
-    max-width: 1200px; /* Maximális szélesség */
-    margin: 0 auto; /* Középre igazítjuk */
-=======
     background-color: #ae8060;
     color: white;
     width: 80%; 
     max-width: 1200px; 
     margin: 0 auto; 
->>>>>>> 161bd45b772712d73f556cea9d38b19688d4845d
     padding: 10px 0;
     display: flex;
     justify-content: flex-start;
@@ -36,12 +27,8 @@ nav a {
     display: block;
     font-weight: 500;
     transition: background-color 0.3s ease, transform 0.2s ease;
-<<<<<<< HEAD
     margin-right: 20px; /* Távolság az egyes linkek között */
     border-radius: 5px;
-=======
-    margin-right: 20px;
->>>>>>> 161bd45b772712d73f556cea9d38b19688d4845d
 }
 
 
@@ -255,3 +242,22 @@ th {
     background-color: #f0f0f0;
   }
   
+.success-message {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.error-message {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}

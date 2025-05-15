@@ -40,11 +40,11 @@
         <p style="color:red;"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></p>
     <?php endif; ?>
     <form action="../controllers/registerController.php" method="post" id="regForm" novalidate>
-        <label for="firstname">Keresztnév:</label>
-        <input type="text" name="firstname" required>
-        <br>
         <label for="lastname">Vezetéknév:</label>
         <input type="text" name="lastname" required>
+        <br>
+        <label for="firstname">Keresztnév:</label>
+        <input type="text" name="firstname" required>
         <br>
         <label for="email">E-mail cím:</label>
         <input type="email" name="email" required>
