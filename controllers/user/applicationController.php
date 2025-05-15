@@ -18,23 +18,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm']))
 
         if (oci_execute($stmt, OCI_COMMIT_ON_SUCCESS))
         {
-            echo "<p>✅ Sikeres jelentkezés!</p>";
+            echo "<p>Sikeres jelentkezés!</p>";
             echo '<a href="showJobs.php">Vissza az állásokhoz</a>';
         }
         else
         {
             $e = oci_error($stmt);
-            echo "<p>❌ Hiba: " . $e['message'] . "</p>";
-            echo '<a href="show_application_form.php">Vissza</a>';
+            echo "<p>Hiba: " . $e['message'] . "</p>";
+            echo '<a href="application.php">Vissza</a>';
         }
 
         oci_free_statement($stmt);
         oci_close($conn);
     } else {
-        echo "<p>❌ Hiányzó adatok!</p>";
-        echo '<a href="show_application_form.php">Vissza</a>';
+        echo "<p>Hiányzó adatok!</p>";
+        echo '<a href="application.php">Vissza</a>';
     }
 } else {
-    header("Location: show_application_form.php");
+    header("Location: application.php");
     exit;
 }
