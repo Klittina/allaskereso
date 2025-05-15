@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Bejelentkezés</title>
     <link rel="stylesheet" href="../assets/styles.css">
+    <script src="../assets/js/formValidation.js"></script>
 </head>
 <body>
 <nav>
@@ -38,9 +39,14 @@
     <?php if (isset($_SESSION['error'])): ?>
         <p style="color:red;"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></p>
     <?php endif; ?>
-    <form action="../controllers/loginController.php" method="post">
-        <input type="email" name="email" placeholder="Email cím" required><br>
-        <input type="password" name="password" placeholder="Jelszó" required><br>
+    <form action="../controllers/loginController.php" method="post" id="regForm" novalidate>
+        
+        <label for="email">Email cím:</label>
+        <input type="email" name="email" required>
+        <br>
+        <label for="password">Jelszó:</label>
+        <input type="password" name="password"  required>
+        <br>
         <button type="submit">Bejelentkezés</button>
     </form>
     <p><a href="../index.php">⬅Vissza a főoldalra</a></p>

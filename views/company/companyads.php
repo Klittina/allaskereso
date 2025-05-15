@@ -87,6 +87,7 @@ if (!empty($adIds)) {
     <meta charset="UTF-8">
     <title>Saját hirdetések</title>
     <link rel="stylesheet" href="../../assets/styles.css">
+    <script src="../../assets/js/formValidation.js"></script>
 </head>
 <body>
 
@@ -106,7 +107,7 @@ if (!empty($adIds)) {
 
         <a href="../../controllers/logout.php" class="logout">Kijelentkezés</a>
     <?php else: ?>
-        <div class="dropdown">
+          <div class="dropdown">
             <a href="#" class="dropdown-toggle <?= (basename($_SERVER['PHP_SELF']) == 'login.php') ? 'active' : '' ?>">Bejelentkezés</a>
             <div class="dropdown-content">
                 <a href="../login.php?type=user">Bejelentkezés magánszemélyként</a>

@@ -71,6 +71,7 @@ oci_execute($stid_cv);
     <a href="user/cvupload.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Önéletrajz</a>
     <a href="user/lang_examupload.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Új nyelvvizsga</a>
     <a href="user/newschool.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Új képzettség</a>
+    <a href="user/showJobs.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>">Álláshirdetés</a>
 <?php endif; ?>
 
         <a href="../controllers/logout.php" class="logout">Kijelentkezés</a>
